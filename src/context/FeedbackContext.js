@@ -1,45 +1,66 @@
 import { v4 as uuidv4 } from "uuid";
-import {createContext, useState} from 'react'
+import { createContext, useState } from "react";
+import { findAllByDisplayValue } from "@testing-library/react";
 
-const FeedbackContext = createContext()
+const FeedbackContext = createContext();
 
-export const FeedbackProvider = ({children}) => {
-    const [feedback, setFeedback] = useState ([
+export const FeedbackProvider = ({ children }) => {
+  const [feedback, setFeedback] = useState([
     {
-        id: 1,
-        text: 'This item is feedback item 1',
-        rating: 10,
+      id: 1,
+      text: "This item is feedback item 1",
+      rating: 10,
     },
     {
-        id: 2,
-        text: 'This item is feedback item 2',
-        rating: 9,
+      id: 2,
+      text: "This item is feedback item 2",
+      rating: 9,
     },
     {
-        id: 3,
-        text: 'This item is feedback item 3',
-        rating: 7,
+      id: 3,
+      text: "This item is feedback item 3",
+      rating: 7,
     },
-])
+  ]);
 
-    const addFeedback = (newFeedback) => {
-        newFeedback.id = uuidv4();
-        setFeedback([newFeedback, ...feedback]);
-      };
+  const [feedbackEdit, setfeedbackEdit] = useState({
+    item: {},
+    edit: false,
+  });
 
-    const deleteFeedback = (id) => {
-        if (window.confirm("Are you sure you want to delete?")) {
-          setFeedback(feedback.filter((item) => item.id !== id));
-        }
-      };
+  // Add feedback
+  const addFeedback = (newFeedback) => {
+    newFeedback.id = uuidv4();
+    setFeedback([newFeedback, ...feedback]);
+  };
 
-    return <FeedbackContext.Provider value={{
+  // Delete feedback
+  const deleteFeedback = (id) => {
+    if (window.confirm("Are you sure you want to delete?")) {
+      setFeedback(feedback.filter((item) => item.id !== id));
+    }
+  };
+
+  // Set item to be update
+  const editFeedback = (item) => {
+    setfeedbackEdit({
+      item,
+      edit: true,
+    });
+  };
+
+  return (
+    <FeedbackContext.Provider
+      value={{
         feedback,
         deleteFeedback,
         addFeedback,
-    }}>
-        {children}
+        editFeedback,
+      }}
+    >
+      {children}
     </FeedbackContext.Provider>
-}
+  );
+};
 
-export default FeedbackContext
+export default FeedbackContext;
